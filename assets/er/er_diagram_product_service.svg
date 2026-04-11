@@ -1,0 +1,274 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="1360" viewBox="0 0 1560 1360">
+  <defs>
+    <style>
+      .bg     { fill: #f8fafc; }
+      .entity { fill: #ffffff; stroke: #94a3b8; stroke-width: 2; }
+      .head   { fill: #e2e8f0; stroke: #94a3b8; stroke-width: 2; }
+      .title  { font: 700 17px Arial, sans-serif; fill: #0f172a; }
+      .field  { font: 400 14px Arial, sans-serif; fill: #1e293b; }
+      .small  { font: 400 13px Arial, sans-serif; fill: #475569; }
+      .rel    { stroke: #64748b; stroke-width: 2; fill: none; }
+      .lbl    { font: 600 12px Arial, sans-serif; fill: #334155; }
+    </style>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="9" refY="5"
+            orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1560" height="1360"/>
+  <text x="40" y="40" class="title">ER-схема БД: Catalog Service (сервис товаров)</text>
+
+  <!-- ══════════════════════════════════════
+       ТАБЛИЦЫ
+       Layout (абсолютные координаты):
+         Row 1: product_categories(40,80)  products(520,60)  product_images(1080,80)
+         Row 2: product_attributes(40,500) attr_values(420,500)  suppliers(1080,460)
+         Row 3: tag_links(40,840)  status_history(420,800)  supplier_data(860,840)
+         Row 4: product_tags(40,1080)
+       ══════════════════════════════════════ -->
+
+  <!-- products -->
+  <g transform="translate(520,60)">
+    <rect class="entity" x="0" y="0" width="320" height="400" rx="16"/>
+    <rect class="head"   x="0" y="0" width="320" height="54"  rx="16"/>
+    <rect class="head"   x="0" y="36" width="320" height="18"/>
+    <text x="20" y="33" class="title">products</text>
+    <text x="20" y="84"  class="field">PK  id</text>
+    <text x="20" y="110" class="field">    sku</text>
+    <text x="20" y="136" class="field">    name</text>
+    <text x="20" y="162" class="field">    short_description</text>
+    <text x="20" y="188" class="field">    full_description</text>
+    <text x="20" y="214" class="field">FK  category_id</text>
+    <text x="20" y="240" class="field">    brand</text>
+    <text x="20" y="266" class="field">    status</text>
+    <text x="20" y="292" class="field">FK  supplier_id</text>
+    <text x="20" y="318" class="field">    created_at</text>
+    <text x="20" y="344" class="field">    updated_at</text>
+    <text x="20" y="370" class="field">    published_at</text>
+  </g>
+
+  <!-- product_categories -->
+  <g transform="translate(40,80)">
+    <rect class="entity" x="0" y="0" width="300" height="300" rx="16"/>
+    <rect class="head"   x="0" y="0" width="300" height="54"  rx="16"/>
+    <rect class="head"   x="0" y="36" width="300" height="18"/>
+    <text x="20" y="33" class="title">product_categories</text>
+    <text x="20" y="84"  class="field">PK  id</text>
+    <text x="20" y="110" class="field">    name</text>
+    <text x="20" y="136" class="field">    code</text>
+    <text x="20" y="162" class="field">FK  parent_id</text>
+    <text x="20" y="188" class="field">    description</text>
+    <text x="20" y="214" class="field">    is_active</text>
+    <text x="20" y="240" class="field">    sort_order</text>
+    <text x="20" y="266" class="field">    created_at / updated_at</text>
+  </g>
+
+  <!-- product_images -->
+  <g transform="translate(1080,80)">
+    <rect class="entity" x="0" y="0" width="300" height="240" rx="16"/>
+    <rect class="head"   x="0" y="0" width="300" height="54"  rx="16"/>
+    <rect class="head"   x="0" y="36" width="300" height="18"/>
+    <text x="20" y="33" class="title">product_images</text>
+    <text x="20" y="84"  class="field">PK  id</text>
+    <text x="20" y="110" class="field">FK  product_id</text>
+    <text x="20" y="136" class="field">    image_url</text>
+    <text x="20" y="162" class="field">    alt_text</text>
+    <text x="20" y="188" class="field">    is_main</text>
+    <text x="20" y="214" class="field">    sort_order</text>
+  </g>
+
+  <!-- product_attributes -->
+  <g transform="translate(40,500)">
+    <rect class="entity" x="0" y="0" width="300" height="300" rx="16"/>
+    <rect class="head"   x="0" y="0" width="300" height="54"  rx="16"/>
+    <rect class="head"   x="0" y="36" width="300" height="18"/>
+    <text x="20" y="33" class="title">product_attributes</text>
+    <text x="20" y="84"  class="field">PK  id</text>
+    <text x="20" y="110" class="field">    name</text>
+    <text x="20" y="136" class="field">    code</text>
+    <text x="20" y="162" class="field">    unit</text>
+    <text x="20" y="188" class="field">    description</text>
+    <text x="20" y="214" class="field">    is_filterable</text>
+    <text x="20" y="240" class="field">    is_visible</text>
+    <text x="20" y="266" class="field">    sort_order</text>
+  </g>
+
+  <!-- product_attribute_values -->
+  <g transform="translate(420,500)">
+    <rect class="entity" x="0" y="0" width="360" height="220" rx="16"/>
+    <rect class="head"   x="0" y="0" width="360" height="54"  rx="16"/>
+    <rect class="head"   x="0" y="36" width="360" height="18"/>
+    <text x="20" y="33" class="title">product_attribute_values</text>
+    <text x="20" y="84"  class="field">PK  id</text>
+    <text x="20" y="110" class="field">FK  product_id</text>
+    <text x="20" y="136" class="field">FK  attribute_id</text>
+    <text x="20" y="162" class="field">    value</text>
+    <text x="20" y="188" class="field">    created_at / updated_at</text>
+  </g>
+
+  <!-- suppliers -->
+  <g transform="translate(1080,460)">
+    <rect class="entity" x="0" y="0" width="320" height="300" rx="16"/>
+    <rect class="head"   x="0" y="0" width="320" height="54"  rx="16"/>
+    <rect class="head"   x="0" y="36" width="320" height="18"/>
+    <text x="20" y="33" class="title">suppliers</text>
+    <text x="20" y="84"  class="field">PK  id</text>
+    <text x="20" y="110" class="field">    name</text>
+    <text x="20" y="136" class="field">    code</text>
+    <text x="20" y="162" class="field">    contact_name</text>
+    <text x="20" y="188" class="field">    email</text>
+    <text x="20" y="214" class="field">    phone</text>
+    <text x="20" y="240" class="field">    comment</text>
+    <text x="20" y="266" class="field">    is_active</text>
+  </g>
+
+  <!-- product_tag_links -->
+  <g transform="translate(40,840)">
+    <rect class="entity" x="0" y="0" width="300" height="200" rx="16"/>
+    <rect class="head"   x="0" y="0" width="300" height="54"  rx="16"/>
+    <rect class="head"   x="0" y="36" width="300" height="18"/>
+    <text x="20" y="33" class="title">product_tag_links</text>
+    <text x="20" y="84"  class="field">PK  id</text>
+    <text x="20" y="110" class="field">FK  product_id</text>
+    <text x="20" y="136" class="field">FK  tag_id</text>
+    <text x="20" y="162" class="field">    created_at</text>
+  </g>
+
+  <!-- product_status_history -->
+  <g transform="translate(420,800)">
+    <rect class="entity" x="0" y="0" width="360" height="275" rx="16"/>
+    <rect class="head"   x="0" y="0" width="360" height="54"  rx="16"/>
+    <rect class="head"   x="0" y="36" width="360" height="18"/>
+    <text x="20" y="33" class="title">product_status_history</text>
+    <text x="20" y="84"  class="field">PK  id</text>
+    <text x="20" y="110" class="field">FK  product_id</text>
+    <text x="20" y="136" class="field">    old_status</text>
+    <text x="20" y="162" class="field">    new_status</text>
+    <text x="20" y="188" class="field">    changed_by</text>
+    <text x="20" y="214" class="field">    change_reason</text>
+    <text x="20" y="240" class="field">    changed_at</text>
+  </g>
+
+  <!-- product_supplier_data -->
+  <g transform="translate(860,840)">
+    <rect class="entity" x="0" y="0" width="380" height="300" rx="16"/>
+    <rect class="head"   x="0" y="0" width="380" height="54"  rx="16"/>
+    <rect class="head"   x="0" y="36" width="380" height="18"/>
+    <text x="20" y="33" class="title">product_supplier_data</text>
+    <text x="20" y="84"  class="field">PK  id</text>
+    <text x="20" y="110" class="field">FK  product_id</text>
+    <text x="20" y="136" class="field">FK  supplier_id</text>
+    <text x="20" y="162" class="field">    external_product_id</text>
+    <text x="20" y="188" class="field">    source_file_name</text>
+    <text x="20" y="214" class="field">    import_batch_id</text>
+    <text x="20" y="240" class="field">    raw_data</text>
+    <text x="20" y="266" class="field">    imported_at / updated_at</text>
+  </g>
+
+  <!-- product_tags -->
+  <g transform="translate(40,1080)">
+    <rect class="entity" x="0" y="0" width="300" height="200" rx="16"/>
+    <rect class="head"   x="0" y="0" width="300" height="54"  rx="16"/>
+    <rect class="head"   x="0" y="36" width="300" height="18"/>
+    <text x="20" y="33" class="title">product_tags</text>
+    <text x="20" y="84"  class="field">PK  id</text>
+    <text x="20" y="110" class="field">    name</text>
+    <text x="20" y="136" class="field">    code</text>
+    <text x="20" y="162" class="field">    created_at / updated_at</text>
+  </g>
+
+  <!-- ══════════════════════════════════════
+       СВЯЗИ — только ортогональные пути,
+       каждый проходит через свободный коридор
+       ══════════════════════════════════════ -->
+
+  <!--
+    Routing corridors:
+      Vertical   x=20   — левый внешний борт (arrow 6)
+      Vertical   x=380  — между categories(right=340) и attr_values(left=420)
+      Vertical   x=800  — правее attr_values(right=780) и status_history(right=780)
+      Vertical   x=950  — левее supplier_data(left=860)  ← нет, 950 > 860, внутри
+                  x=950 внутри supplier_data → OK: стрелка 9 входит сверху
+      Vertical   x=1060 — левее suppliers(left=1080) и images(left=1080)
+      Horizontal y=482  — зазор между products(bottom=460) и attr_values(top=500)
+  -->
+
+  <!-- 1. product_categories (1) ──► products (N)   [category_id FK]
+       Маршрут: categories.right(340,230) → products.left(520,230)  прямая горизонталь -->
+  <path class="rel" marker-end="url(#arr)"
+        d="M 340,230 L 520,230"/>
+  <text x="395" y="222" class="lbl">1 : N</text>
+
+  <!-- 2. products (1) ──► product_images (N)   [product_id FK]
+       Маршрут: products.right(840,165) → images.left(1080,165)  прямая горизонталь -->
+  <path class="rel" marker-end="url(#arr)"
+        d="M 840,165 L 1080,165"/>
+  <text x="930" y="157" class="lbl">1 : N</text>
+
+  <!-- 3. products (1) ──► product_attribute_values (N)   [product_id FK]
+       Маршрут: products.bottom(640,460) → ↓ → ← → attr_values.top(580,500)
+       Коридор: y=482 между bottom products и top attr_values -->
+  <path class="rel" marker-end="url(#arr)"
+        d="M 640,460 L 640,482 L 580,482 L 580,500"/>
+  <text x="590" y="478" class="lbl">1 : N</text>
+
+  <!-- 4. product_attributes (1) ──► product_attribute_values (N)   [attribute_id FK]
+       Маршрут: attributes.right(340,650) → attr_values.left(420,650)  прямая горизонталь -->
+  <path class="rel" marker-end="url(#arr)"
+        d="M 340,650 L 420,650"/>
+  <text x="352" y="642" class="lbl">1 : N</text>
+
+  <!-- 5. products (1) ──► product_status_history (N)   [product_id FK]
+       Маршрут: products.bottom(800,460) → ↓x=800 (коридор правее attr_values) → status_history.right(780,935)
+       x=800 правее attr_values.right=780 и status_history.right=780 — проходит снаружи обеих таблиц -->
+  <path class="rel" marker-end="url(#arr)"
+        d="M 800,460 L 800,935 L 780,935"/>
+  <text x="806" y="695" class="lbl">1 : N</text>
+
+  <!-- 6. products (1) ──► product_tag_links (N)   [product_id FK]
+       Маршрут: products.left(520,420) → ← x=20 (внешний левый борт, вне всех таблиц) → tag_links.left(40,940)
+       x=20 < 40 — левее всех таблиц, y=420–940 полностью свободен -->
+  <path class="rel" marker-end="url(#arr)"
+        d="M 520,420 L 20,420 L 20,940 L 40,940"/>
+  <text x="24" y="682" class="lbl">1 : N</text>
+
+  <!-- 7. product_tags (1) ──► product_tag_links (N)   [tag_id FK]
+       Маршрут: tag_links.bottom(160,1040) → ↓ → tags.top(160,1080)  прямая вертикаль -->
+  <path class="rel" marker-end="url(#arr)"
+        d="M 160,1040 L 160,1080"/>
+  <text x="168" y="1064" class="lbl">1 : N</text>
+
+  <!-- 8. products (N) ──► suppliers (1)   [supplier_id FK]
+       Маршрут: products.right(840,260) → → x=1060 (коридор левее images и suppliers) → suppliers.left(1080,610)
+       x=1060 < images.left=1080 и < suppliers.left=1080 — проходит снаружи слева -->
+  <path class="rel" marker-end="url(#arr)"
+        d="M 840,260 L 1060,260 L 1060,610 L 1080,610"/>
+  <text x="920" y="252" class="lbl">N : 1</text>
+
+  <!-- 9. products (1) ──► product_supplier_data (N)   [product_id FK]
+       Маршрут: products.right(840,380) → → x=950 → ↓ → supplier_data.top(950,840)
+       x=950 в диапазоне supplier_data.x=860–1240 → входит сверху; левее suppliers.left=1080 — свободно -->
+  <path class="rel" marker-end="url(#arr)"
+        d="M 840,380 L 950,380 L 950,840"/>
+  <text x="876" y="372" class="lbl">1 : N</text>
+
+  <!-- 10. suppliers (1) ──► product_supplier_data (N)   [supplier_id FK]
+        Маршрут: suppliers.bottom(1200,760) → ↓ → supplier_data.top(1200,840)  прямая вертикаль -->
+  <path class="rel" marker-end="url(#arr)"
+        d="M 1200,760 L 1200,840"/>
+  <text x="1208" y="804" class="lbl">1 : N</text>
+
+  <!-- ══════════════════════════════════════
+       ЛЕГЕНДА
+       ══════════════════════════════════════ -->
+  <rect x="1340" y="80" width="190" height="170" rx="14"
+        fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="1358" y="112" style="font:700 13px Arial;fill:#0f172a">Обозначения</text>
+  <text x="1358" y="136" class="small">PK — первичный ключ</text>
+  <text x="1358" y="158" class="small">FK — внешний ключ</text>
+  <text x="1358" y="180" class="small">1:N — один-ко-многим</text>
+  <text x="1358" y="202" class="small">N:1 — многие-к-одному</text>
+  <text x="1358" y="224" class="small">→ направление стрелки</text>
+
+</svg>
