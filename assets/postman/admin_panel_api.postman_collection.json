@@ -1,0 +1,720 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "Admin Panel API",
+    "description": "API панели управления. Включает авторизацию и полное управление товарами, справочниками, заказами, акциями, отзывами и импортом. Все запросы (кроме /auth/login) требуют заголовок Authorization: Bearer {{adminToken}}.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Авторизация",
+      "item": [
+        {
+          "name": "Войти (получить токен)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.token) {",
+                  "    pm.collectionVariables.set('adminToken', json.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"login\": \"admin\",\n  \"password\": \"secret\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Авторизация по логину и паролю. Возвращает JWT-токен, который автоматически сохраняется в переменную {{adminToken}}."
+          },
+          "response": []
+        },
+        {
+          "name": "Текущий пользователь",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            },
+            "description": "Возвращает данные текущего авторизованного администратора."
+          },
+          "response": []
+        },
+        {
+          "name": "Выйти (завершить сессию)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
+            },
+            "description": "Завершает текущую сессию. Токен после этого запроса недействителен."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Товары",
+      "item": [
+        {
+          "name": "Получить все товары",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/goods?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "goods"],
+              "query": [
+                { "key": "page",  "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            },
+            "description": "Возвращает все товары включая скрытые (is_visible=false)."
+          },
+          "response": []
+        },
+        {
+          "name": "Создать товар",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"socle_id\": 1,\n  \"shape_id\": 2,\n  \"type_id\": 1,\n  \"suppliers_id\": 3,\n  \"title\": \"Лампа светодиодная E27 10W\",\n  \"price\": 299.99,\n  \"quantity\": 100,\n  \"description\": \"Энергосберегающая светодиодная лампа\",\n  \"size\": 6.0,\n  \"illumination\": 800,\n  \"power\": 10,\n  \"awaited_delivery_time\": \"2026-05-01T00:00:00Z\",\n  \"is_visible\": false\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/goods",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "goods"]
+            },
+            "description": "Создаёт новый товар. По умолчанию is_visible=false — товар не виден в каталоге до публикации."
+          },
+          "response": []
+        },
+        {
+          "name": "Обновить товар",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Лампа светодиодная E27 12W (обновлено)\",\n  \"price\": 349.99,\n  \"quantity\": 80,\n  \"description\": \"Обновлённое описание\",\n  \"size\": 6.5,\n  \"illumination\": 1000,\n  \"power\": 12,\n  \"awaited_delivery_time\": \"2026-06-01T00:00:00Z\",\n  \"is_visible\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/goods/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "goods", "1"]
+            },
+            "description": "Полное обновление товара по ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Изменить видимость товара",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_visible\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/goods/1/visibility",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "goods", "1", "visibility"]
+            },
+            "description": "Публикует или скрывает товар без полного обновления."
+          },
+          "response": []
+        },
+        {
+          "name": "Удалить товар",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/goods/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "goods", "1"]
+            },
+            "description": "Удаляет товар по ID."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Справочники",
+      "item": [
+        {
+          "name": "Цоколи",
+          "item": [
+            {
+              "name": "Получить все цоколи",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+                "url": { "raw": "{{baseUrl}}/admin/socles", "host": ["{{baseUrl}}"], "path": ["admin", "socles"] }
+              },
+              "response": []
+            },
+            {
+              "name": "Создать цоколь",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"E27\"\n}", "options": { "raw": { "language": "json" } } },
+                "url": { "raw": "{{baseUrl}}/admin/socles", "host": ["{{baseUrl}}"], "path": ["admin", "socles"] }
+              },
+              "response": []
+            },
+            {
+              "name": "Обновить цоколь",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"E14\"\n}", "options": { "raw": { "language": "json" } } },
+                "url": { "raw": "{{baseUrl}}/admin/socles/1", "host": ["{{baseUrl}}"], "path": ["admin", "socles", "1"] }
+              },
+              "response": []
+            },
+            {
+              "name": "Удалить цоколь",
+              "request": {
+                "method": "DELETE",
+                "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+                "url": { "raw": "{{baseUrl}}/admin/socles/1", "host": ["{{baseUrl}}"], "path": ["admin", "socles", "1"] }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Формы",
+          "item": [
+            {
+              "name": "Получить все формы",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+                "url": { "raw": "{{baseUrl}}/admin/shapes", "host": ["{{baseUrl}}"], "path": ["admin", "shapes"] }
+              },
+              "response": []
+            },
+            {
+              "name": "Создать форму",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"Груша\"\n}", "options": { "raw": { "language": "json" } } },
+                "url": { "raw": "{{baseUrl}}/admin/shapes", "host": ["{{baseUrl}}"], "path": ["admin", "shapes"] }
+              },
+              "response": []
+            },
+            {
+              "name": "Обновить форму",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"Свеча\"\n}", "options": { "raw": { "language": "json" } } },
+                "url": { "raw": "{{baseUrl}}/admin/shapes/1", "host": ["{{baseUrl}}"], "path": ["admin", "shapes", "1"] }
+              },
+              "response": []
+            },
+            {
+              "name": "Удалить форму",
+              "request": {
+                "method": "DELETE",
+                "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+                "url": { "raw": "{{baseUrl}}/admin/shapes/1", "host": ["{{baseUrl}}"], "path": ["admin", "shapes", "1"] }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Типы",
+          "item": [
+            {
+              "name": "Получить все типы",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+                "url": { "raw": "{{baseUrl}}/admin/types", "host": ["{{baseUrl}}"], "path": ["admin", "types"] }
+              },
+              "response": []
+            },
+            {
+              "name": "Создать тип",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"Светодиодная\"\n}", "options": { "raw": { "language": "json" } } },
+                "url": { "raw": "{{baseUrl}}/admin/types", "host": ["{{baseUrl}}"], "path": ["admin", "types"] }
+              },
+              "response": []
+            },
+            {
+              "name": "Обновить тип",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"title\": \"Галогенная\"\n}", "options": { "raw": { "language": "json" } } },
+                "url": { "raw": "{{baseUrl}}/admin/types/1", "host": ["{{baseUrl}}"], "path": ["admin", "types", "1"] }
+              },
+              "response": []
+            },
+            {
+              "name": "Удалить тип",
+              "request": {
+                "method": "DELETE",
+                "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+                "url": { "raw": "{{baseUrl}}/admin/types/1", "host": ["{{baseUrl}}"], "path": ["admin", "types", "1"] }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Поставщики",
+          "item": [
+            {
+              "name": "Получить всех поставщиков",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+                "url": { "raw": "{{baseUrl}}/admin/suppliers", "host": ["{{baseUrl}}"], "path": ["admin", "suppliers"] }
+              },
+              "response": []
+            },
+            {
+              "name": "Создать поставщика",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"ООО Световые технологии\"\n}", "options": { "raw": { "language": "json" } } },
+                "url": { "raw": "{{baseUrl}}/admin/suppliers", "host": ["{{baseUrl}}"], "path": ["admin", "suppliers"] }
+              },
+              "response": []
+            },
+            {
+              "name": "Обновить поставщика",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"name\": \"ИП Лампочкин\"\n}", "options": { "raw": { "language": "json" } } },
+                "url": { "raw": "{{baseUrl}}/admin/suppliers/1", "host": ["{{baseUrl}}"], "path": ["admin", "suppliers", "1"] }
+              },
+              "response": []
+            },
+            {
+              "name": "Удалить поставщика",
+              "request": {
+                "method": "DELETE",
+                "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+                "url": { "raw": "{{baseUrl}}/admin/suppliers/1", "host": ["{{baseUrl}}"], "path": ["admin", "suppliers", "1"] }
+              },
+              "response": []
+            },
+            {
+              "name": "Привязать поставщика к товару",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+                  { "key": "Content-Type",  "value": "application/json" }
+                ],
+                "body": { "mode": "raw", "raw": "{\n  \"good_id\": 1\n}", "options": { "raw": { "language": "json" } } },
+                "url": { "raw": "{{baseUrl}}/admin/suppliers/1/goods", "host": ["{{baseUrl}}"], "path": ["admin", "suppliers", "1", "goods"] },
+                "description": "Добавляет связь поставщика с товаром (suppliers_to_goods)."
+              },
+              "response": []
+            },
+            {
+              "name": "Отвязать поставщика от товара",
+              "request": {
+                "method": "DELETE",
+                "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+                "url": { "raw": "{{baseUrl}}/admin/suppliers/1/goods/1", "host": ["{{baseUrl}}"], "path": ["admin", "suppliers", "1", "goods", "1"] },
+                "description": "Удаляет связь поставщика с товаром."
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Заказы",
+      "item": [
+        {
+          "name": "Получить список заказов",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/orders?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "orders"],
+              "query": [
+                { "key": "status", "value": "new",        "description": "Фильтр по статусу: new | processing | completed | cancelled", "disabled": true },
+                { "key": "page",   "value": "1" },
+                { "key": "limit",  "value": "20" }
+              ]
+            },
+            "description": "Список всех заказов с возможностью фильтрации по статусу и пагинацией."
+          },
+          "response": []
+        },
+        {
+          "name": "Получить заказ по ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/orders/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "orders", "1"]
+            },
+            "description": "Детали заказа: контактные данные клиента, состав заказа, история статусов."
+          },
+          "response": []
+        },
+        {
+          "name": "Сменить статус заказа",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"processing\",\n  \"change_reason\": \"Принят в обработку\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/orders/1/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "orders", "1", "status"]
+            },
+            "description": "Меняет статус заказа. Допустимые значения: new → processing → completed | cancelled. Изменение фиксируется в order_status_history."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Акции",
+      "item": [
+        {
+          "name": "Получить список акций",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/promos",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "promos"]
+            },
+            "description": "Список всех акций включая неактивные."
+          },
+          "response": []
+        },
+        {
+          "name": "Создать акцию",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Весенний sale\",\n  \"discount_percent\": 15,\n  \"description\": \"Скидки на все бытовые лампочки\",\n  \"starts_at\": \"2026-04-01T00:00:00Z\",\n  \"ends_at\": \"2026-04-30T23:59:59Z\",\n  \"is_active\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/promos",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "promos"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Обновить акцию",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Весенний sale (продлён)\",\n  \"discount_percent\": 20,\n  \"description\": \"Скидки продлены до конца мая\",\n  \"starts_at\": \"2026-04-01T00:00:00Z\",\n  \"ends_at\": \"2026-05-31T23:59:59Z\",\n  \"is_active\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/promos/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "promos", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Включить / отключить акцию",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": false\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/promos/1/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "promos", "1", "active"]
+            },
+            "description": "Быстрое включение или отключение акции без полного обновления."
+          },
+          "response": []
+        },
+        {
+          "name": "Удалить акцию",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/promos/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "promos", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Отзывы",
+      "item": [
+        {
+          "name": "Получить список отзывов",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/reviews?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "reviews"],
+              "query": [
+                { "key": "status", "value": "pending", "description": "Фильтр: pending | approved | rejected", "disabled": true },
+                { "key": "page",   "value": "1" },
+                { "key": "limit",  "value": "20" }
+              ]
+            },
+            "description": "Список отзывов. Фильтр status=pending — только ожидающие модерации."
+          },
+          "response": []
+        },
+        {
+          "name": "Одобрить отзыв",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/reviews/1/approve",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "reviews", "1", "approve"]
+            },
+            "description": "Одобряет отзыв — он становится виден на странице товара."
+          },
+          "response": []
+        },
+        {
+          "name": "Отклонить отзыв",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/reviews/1/reject",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "reviews", "1", "reject"]
+            },
+            "description": "Отклоняет отзыв — он скрывается и не отображается в каталоге."
+          },
+          "response": []
+        },
+        {
+          "name": "Удалить отзыв",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/reviews/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "reviews", "1"]
+            },
+            "description": "Безвозвратно удаляет отзыв."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Импорт",
+      "item": [
+        {
+          "name": "Импортировать товары из файла",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "description": "CSV или Excel-файл с товарами поставщика"
+                },
+                {
+                  "key": "supplier_id",
+                  "value": "1",
+                  "type": "text",
+                  "description": "ID поставщика, от которого пришёл файл"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/import/goods",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "import", "goods"]
+            },
+            "description": "Загружает CSV или Excel-файл с товарами. Данные сохраняются в product_supplier_data для ручной проверки перед публикацией."
+          },
+          "response": []
+        },
+        {
+          "name": "История импортов",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/import/history?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "import", "history"],
+              "query": [
+                { "key": "page",  "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            },
+            "description": "Список всех импортов: имя файла, поставщик, дата, количество обработанных товаров."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "description": "Автоматически заполняется после запроса 'Войти (получить токен)'"
+    }
+  ]
+}

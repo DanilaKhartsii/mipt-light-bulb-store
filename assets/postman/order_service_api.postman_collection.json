@@ -1,0 +1,75 @@
+{
+  "info": {
+    "_postman_id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+    "name": "Order Service API",
+    "description": "API сервиса заказов. Пользовательская часть: оформление заказа и проверка его статуса. Управление заказами администратором — в коллекции Admin Panel API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Оформление заказа",
+      "item": [
+        {
+          "name": "Создать заказ",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.id) {",
+                  "    pm.collectionVariables.set('orderId', json.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"Иванов Иван\",\n  \"customer_phone\": \"+79001234567\",\n  \"customer_email\": \"ivanov@example.com\",\n  \"comment\": \"Позвонить после 18:00\",\n  \"items\": [\n    {\n      \"good_id\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"good_id\": 5,\n      \"quantity\": 1\n    }\n  ]\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders"]
+            },
+            "description": "Оформляет новый заказ. Сервис запрашивает актуальные цены и названия товаров из Catalog Service и сохраняет снепшоты в order_items. Начальный статус заказа — new. ID созданного заказа автоматически сохраняется в переменную {{orderId}}."
+          },
+          "response": []
+        },
+        {
+          "name": "Получить статус заказа",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{orderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "{{orderId}}"]
+            },
+            "description": "Возвращает информацию о заказе: статус, состав, контактные данные. Доступен без авторизации по ID заказа — клиент может проверить статус по ссылке из подтверждения."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api"
+    },
+    {
+      "key": "orderId",
+      "value": "",
+      "description": "Автоматически заполняется после запроса 'Создать заказ'"
+    }
+  ]
+}

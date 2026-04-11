@@ -1,0 +1,152 @@
+<svg width="1800" height="1000" viewBox="0 0 1800 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font: 700 28px Arial, sans-serif; fill: #1F2937; }
+      .subtitle { font: 600 18px Arial, sans-serif; fill: #374151; }
+      .label { font: 600 20px Arial, sans-serif; fill: #111827; }
+      .text { font: 500 17px Arial, sans-serif; fill: #374151; }
+      .small { font: 500 15px Arial, sans-serif; fill: #4B5563; }
+      .tiny { font: 500 14px Arial, sans-serif; fill: #6B7280; }
+      .line { stroke: #64748B; stroke-width: 3; fill: none; }
+      .dashed { stroke: #94A3B8; stroke-width: 2.5; fill: none; stroke-dasharray: 8 8; }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#64748B"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <rect width="1800" height="1000" fill="#F8FAFC"/>
+  <text x="70" y="70" class="title">Верхнеуровневая архитектура интернет-магазина завода лампочек</text>
+  <text x="70" y="105" class="subtitle">Микросервисная схема в формате слева направо для импорта в Figma</text>
+
+  <!-- Swimlanes labels -->
+  <text x="90" y="200" class="subtitle">Пользователи</text>
+  <text x="400" y="200" class="subtitle">Фронтенд</text>
+  <text x="770" y="200" class="subtitle">Backend</text>
+  <text x="1560" y="200" class="subtitle">Базы данных</text>
+
+  <!-- Users -->
+  <g filter="url(#shadow)">
+    <rect x="70" y="250" rx="24" ry="24" width="220" height="180" fill="#DBEAFE" stroke="#60A5FA" stroke-width="2.5"/>
+    <text x="180" y="315" text-anchor="middle" class="label">Админ</text>
+    <text x="180" y="355" text-anchor="middle" class="text">управляет товарами</text>
+    <text x="180" y="382" text-anchor="middle" class="text">акциями, отзывами</text>
+    <text x="180" y="409" text-anchor="middle" class="text">и заказами</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="560" rx="24" ry="24" width="220" height="180" fill="#DCFCE7" stroke="#4ADE80" stroke-width="2.5"/>
+    <text x="180" y="625" text-anchor="middle" class="label">Юзер</text>
+    <text x="180" y="665" text-anchor="middle" class="text">смотрит каталог</text>
+    <text x="180" y="692" text-anchor="middle" class="text">кладёт в корзину</text>
+    <text x="180" y="719" text-anchor="middle" class="text">и оформляет заказ</text>
+  </g>
+
+  <!-- Frontend -->
+  <g filter="url(#shadow)">
+    <rect x="360" y="250" rx="24" ry="24" width="260" height="180" fill="#EDE9FE" stroke="#A78BFA" stroke-width="2.5"/>
+    <text x="490" y="315" text-anchor="middle" class="label">Admin Frontend</text>
+    <text x="490" y="355" text-anchor="middle" class="text">админ-панель</text>
+    <text x="490" y="382" text-anchor="middle" class="text">управление системой</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="360" y="560" rx="24" ry="24" width="260" height="180" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2.5"/>
+    <text x="490" y="625" text-anchor="middle" class="label">Web Frontend</text>
+    <text x="490" y="665" text-anchor="middle" class="text">витрина магазина</text>
+    <text x="490" y="692" text-anchor="middle" class="text">каталог, поиск, корзина</text>
+  </g>
+
+  <!-- Backend Big Block -->
+  <g filter="url(#shadow)">
+    <rect x="700" y="210" rx="28" ry="28" width="760" height="620" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="3"/>
+    <text x="760" y="265" class="label">Backend</text>
+    <text x="760" y="295" class="small">единый логический backend-слой из набора микросервисов</text>
+
+    <!-- gateway -->
+    <rect x="740" y="330" rx="18" ry="18" width="680" height="70" fill="#EFF6FF" stroke="#93C5FD" stroke-width="2"/>
+    <text x="1080" y="373" text-anchor="middle" class="label">API Gateway / BFF</text>
+
+    <!-- service grid -->
+    <rect x="740" y="440" rx="18" ry="18" width="205" height="95" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="842" y="478" text-anchor="middle" class="text">Catalog Service</text>
+    <text x="842" y="505" text-anchor="middle" class="tiny">товары, карточки, каталог</text>
+
+    <rect x="975" y="440" rx="18" ry="18" width="205" height="95" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="1077" y="478" text-anchor="middle" class="text">Inventory Service</text>
+    <text x="1077" y="505" text-anchor="middle" class="tiny">наличие, остатки, ожидается</text>
+
+    <rect x="1210" y="440" rx="18" ry="18" width="210" height="95" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="1315" y="478" text-anchor="middle" class="text">Search Service</text>
+    <text x="1315" y="505" text-anchor="middle" class="tiny">поиск и индексация</text>
+
+    <rect x="740" y="565" rx="18" ry="18" width="205" height="95" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="842" y="603" text-anchor="middle" class="text">Cart Service</text>
+    <text x="842" y="630" text-anchor="middle" class="tiny">гостевая корзина</text>
+
+    <rect x="975" y="565" rx="18" ry="18" width="205" height="95" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="1077" y="603" text-anchor="middle" class="text">Order Service</text>
+    <text x="1077" y="630" text-anchor="middle" class="tiny">оформление и статусы заказов</text>
+
+    <rect x="1210" y="565" rx="18" ry="18" width="210" height="95" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="1315" y="603" text-anchor="middle" class="text">Promo Service</text>
+    <text x="1315" y="630" text-anchor="middle" class="tiny">акции и скидки</text>
+
+    <rect x="740" y="690" rx="18" ry="18" width="205" height="95" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="842" y="728" text-anchor="middle" class="text">Review Service</text>
+    <text x="842" y="755" text-anchor="middle" class="tiny">отзывы и модерация</text>
+
+    <rect x="975" y="690" rx="18" ry="18" width="205" height="95" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="1077" y="728" text-anchor="middle" class="text">Content / Contacts</text>
+    <text x="1077" y="755" text-anchor="middle" class="tiny">контакты и статические страницы</text>
+
+    <rect x="1210" y="690" rx="18" ry="18" width="210" height="95" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+    <text x="1315" y="728" text-anchor="middle" class="text">Admin/Auth + Import</text>
+    <text x="1315" y="755" text-anchor="middle" class="tiny">админ-доступ и импорт поставщика</text>
+  </g>
+
+  <!-- DBs -->
+  <g filter="url(#shadow)">
+    <rect x="1530" y="250" rx="22" ry="22" width="210" height="150" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2.5"/>
+    <text x="1635" y="305" text-anchor="middle" class="label">Catalog DB</text>
+    <text x="1635" y="338" text-anchor="middle" class="tiny">товары, категории,</text>
+    <text x="1635" y="360" text-anchor="middle" class="tiny">характеристики</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1530" y="430" rx="22" ry="22" width="210" height="150" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2.5"/>
+    <text x="1635" y="485" text-anchor="middle" class="label">Order DB</text>
+    <text x="1635" y="518" text-anchor="middle" class="tiny">заказы, состав,</text>
+    <text x="1635" y="540" text-anchor="middle" class="tiny">статусы</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1530" y="610" rx="22" ry="22" width="210" height="150" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2.5"/>
+    <text x="1635" y="665" text-anchor="middle" class="label">Other DBs</text>
+    <text x="1635" y="698" text-anchor="middle" class="tiny">корзина, отзывы,</text>
+    <text x="1635" y="720" text-anchor="middle" class="tiny">акции, контент, auth</text>
+  </g>
+
+  <!-- Arrows -->
+  <path d="M290 340 H345" class="line" marker-end="url(#arrow)"/>
+  <path d="M290 650 H345" class="line" marker-end="url(#arrow)"/>
+
+  <path d="M620 340 H680" class="line" marker-end="url(#arrow)"/>
+  <path d="M620 650 H680" class="line" marker-end="url(#arrow)"/>
+
+  <path d="M1460 340 H1510" class="line" marker-end="url(#arrow)"/>
+  <path d="M1460 505 H1510" class="line" marker-end="url(#arrow)"/>
+  <path d="M1460 725 H1510" class="line" marker-end="url(#arrow)"/>
+
+  <!-- internal backend links -->
+  <path d="M1080 400 V430" class="dashed" marker-end="url(#arrow)"/>
+  <path d="M1080 400 V555" class="dashed" marker-end="url(#arrow)"/>
+  <path d="M1080 400 V680" class="dashed" marker-end="url(#arrow)"/>
+
+  <!-- footer note -->
+  <text x="70" y="930" class="small">Логика чтения: Пользователь/Админ → свой Frontend → Backend → соответствующие базы данных</text>
+  <text x="70" y="958" class="tiny">Для Figma: импортируйте SVG, затем при необходимости разгруппируйте элементы и отредактируйте подписи/цвета.</text>
+</svg>

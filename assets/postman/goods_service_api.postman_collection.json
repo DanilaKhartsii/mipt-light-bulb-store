@@ -1,0 +1,105 @@
+{
+  "info": {
+    "_postman_id": "9263455b-13c1-4e74-a6ec-67caa97f70a9",
+    "name": "Goods Service API",
+    "description": "Публичный API сервиса товаров. Только пользовательская часть: каталог, карточки товаров, справочники для фильтрации.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Товары",
+      "item": [
+        {
+          "name": "Получить список товаров",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/goods?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["goods"],
+              "query": [
+                { "key": "socle_id",  "value": "1",    "description": "Фильтр по цоколю",           "disabled": true },
+                { "key": "shape_id",  "value": "1",    "description": "Фильтр по форме",            "disabled": true },
+                { "key": "type_id",   "value": "1",    "description": "Фильтр по типу",             "disabled": true },
+                { "key": "min_price", "value": "100",  "description": "Минимальная цена",           "disabled": true },
+                { "key": "max_price", "value": "5000", "description": "Максимальная цена",          "disabled": true },
+                { "key": "page",      "value": "1",    "description": "Номер страницы" },
+                { "key": "limit",     "value": "20",   "description": "Количество на странице" }
+              ]
+            },
+            "description": "Возвращает список видимых товаров (is_visible=true). Поддерживает фильтрацию по цоколю, форме, типу, диапазону цен и пагинацию."
+          },
+          "response": []
+        },
+        {
+          "name": "Получить товар по ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/goods/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["goods", "1"]
+            },
+            "description": "Возвращает подробную карточку товара. Недоступен, если is_visible=false."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Справочники",
+      "item": [
+        {
+          "name": "Получить список цоколей",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/socles",
+              "host": ["{{baseUrl}}"],
+              "path": ["socles"]
+            },
+            "description": "Список цоколей для фильтрации товаров в каталоге."
+          },
+          "response": []
+        },
+        {
+          "name": "Получить список форм",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/shapes",
+              "host": ["{{baseUrl}}"],
+              "path": ["shapes"]
+            },
+            "description": "Список форм для фильтрации товаров в каталоге."
+          },
+          "response": []
+        },
+        {
+          "name": "Получить список типов",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/types",
+              "host": ["{{baseUrl}}"],
+              "path": ["types"]
+            },
+            "description": "Список типов товаров для фильтрации в каталоге."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api"
+    }
+  ]
+}
