@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Optional
-from .. import models, schemas
+from .. import schemas
 from ..database import get_db
+from ..services import admin_order_service
 
 router = APIRouter(prefix="/admin", tags=["Администрирование заказов"])
 
@@ -14,19 +15,12 @@ def admin_list_orders(
     limit: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
-    if status and status not in schemas.ORDER_STATUSES:
-        raise HTTPException(status_code=422, detail=f"Недопустимый статус: {status}")
-    q = db.query(models.Order)
-    if status:
-        q = q.filter(models.Order.status == status)
-    total = q.count()
-    items = q.order_by(models.Order.created_at.desc()).offset((page - 1) * limit).limit(limit).all()
-    return {"total": total, "page": page, "limit": limit, "items": items}
+    return admin_order_service.list_orders(db, page, limit, status)
 
 
 @router.get("/orders/{order_id}", response_model=schemas.OrderResponse)
 def admin_get_order(order_id: int, db: Session = Depends(get_db)):
-    order = db.query(models.Order).filter(models.Order.order_id == order_id).first()
+    order = admin_order_service.get_order(db, order_id)
     if not order:
         raise HTTPException(status_code=404, detail="Заказ не найден")
     return order
@@ -34,31 +28,7 @@ def admin_get_order(order_id: int, db: Session = Depends(get_db)):
 
 @router.patch("/orders/{order_id}/status", response_model=schemas.OrderResponse)
 def admin_change_status(order_id: int, data: schemas.StatusUpdate, db: Session = Depends(get_db)):
-    order = db.query(models.Order).filter(models.Order.order_id == order_id).first()
+    order = admin_order_service.get_order(db, order_id)
     if not order:
         raise HTTPException(status_code=404, detail="Заказ не найден")
-
-    if data.status not in schemas.ORDER_STATUSES:
-        raise HTTPException(status_code=422, detail=f"Недопустимый статус: {data.status}")
-
-    allowed = schemas.VALID_TRANSITIONS.get(order.status, set())
-    if data.status not in allowed:
-        raise HTTPException(
-            status_code=422,
-            detail=f"Переход '{order.status}' → '{data.status}' недопустим",
-        )
-
-    old_status = order.status
-    order.status = data.status
-
-    db.add(models.OrderStatusHistory(
-        order_id=order_id,
-        old_status=old_status,
-        new_status=data.status,
-        changed_by="admin",
-        change_reason=data.change_reason,
-    ))
-
-    db.commit()
-    db.refresh(order)
-    return order
+    return admin_order_service.update_status(db, order, data.status, data.change_reason)

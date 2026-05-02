@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Optional
-from .. import models, schemas
+from .. import schemas
 from ..database import get_db
+from ..services import goods_service
 
 router = APIRouter(tags=["Товары"])
 
@@ -18,29 +19,16 @@ def list_goods(
     limit: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
-    q = db.query(models.Good).filter(models.Good.is_visible == True)
-    if socle_id is not None:
-        q = q.filter(models.Good.socle_id == socle_id)
-    if shape_id is not None:
-        q = q.filter(models.Good.shape_id == shape_id)
-    if type_id is not None:
-        q = q.filter(models.Good.type_id == type_id)
-    if min_price is not None:
-        q = q.filter(models.Good.price >= min_price)
-    if max_price is not None:
-        q = q.filter(models.Good.price <= max_price)
-
-    total = q.count()
-    items = q.offset((page - 1) * limit).limit(limit).all()
-    return {"total": total, "page": page, "limit": limit, "items": items}
+    return goods_service.list_visible_goods(
+        db, page, limit,
+        socle_id=socle_id, shape_id=shape_id, type_id=type_id,
+        min_price=min_price, max_price=max_price,
+    )
 
 
 @router.get("/goods/{good_id}", response_model=schemas.GoodResponse)
 def get_good(good_id: int, db: Session = Depends(get_db)):
-    good = db.query(models.Good).filter(
-        models.Good.good_id == good_id,
-        models.Good.is_visible == True,
-    ).first()
+    good = goods_service.get_visible_good(db, good_id)
     if not good:
         raise HTTPException(status_code=404, detail="Товар не найден")
     return good
