@@ -57,6 +57,14 @@ services:
       goods-service:
         condition: service_started
 
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8000:8000"
+    depends_on:
+      - goods-service
+      - order-service
+
 volumes:
   goods_db_data:
   order_db_data:
